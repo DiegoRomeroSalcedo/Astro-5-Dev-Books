@@ -1,0 +1,11 @@
+---
+import { SCORE_API_ENDPOINT } from "astro:env/server";
+
+const res = await fetch(SCORE_API_ENDPOINT)
+const scoreValue = await res.text();
+---
+
+<span class="text-xs" id="score">
+    ⭐ Puntuación: {scoreValue}/5
+</span>
+<!-- Basicamente lo que estamos haciendo es hacer uso de los server islands, este componente ya solo lo importamos donde lo usamos. -->

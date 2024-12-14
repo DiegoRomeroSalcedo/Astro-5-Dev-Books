@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from "astro:content"; // Render sirve para renderizar el content del marckdown del getCollection
+import { SHOW_BUY_BUTTON } from "astro:env/server"; // Leemos la .env en el server
+import Layout from "../../layouts/Layout.astro";
+import BookScore from "../../components/BookScore.astro";
+import BuyButton from "../../components/BuyButton.astro";
+
+export async function getStaticPaths() {
+    const books = await getCollection('books');
+
+    return books.map((book) => ({
+        params: { id: book.slug },
+        props: { book }
+    }));
+}
+
+const { book } = Astro.props;
+const { data, slug } = book;
+const { title, author, img, readtime, description, buy } = data;
+
+const { Content } = await render(book);
+
+export const prerender = true
+---
+
+<Layout title={`${title} - Dev Books`}>
+    <div class="flex gap-12">
+        <aside class="flex flex-col gap-8">
+            <img 
+                transition:name={`image-${slug}`}
+                src={`/${img}`} 
+                alt={img} 
+                class="rounded w-80 h-auto"
+            />
+            <!-- Con server:defer basicamente estamos diciendo que esto es un server island, y el contenido sera dinámico -->
+            <BookScore server:defer id={slug}>
+                <!-- Los fallbacks nos sirven en este caso para mostrar contenido mientras la página carga -->
+                <span slot="fallback" class="text-xs opacity-70">Cargando Puntuación...</span>
+            </BookScore>
+            <!-- Enlace para redirigir a compra de Amazon -->
+            {
+                SHOW_BUY_BUTTON && <BuyButton server:defer buy={buy}/>
+            }
+        </aside>
+        <main class="max-w-2xl">
+            <h1 transition:name={`title-${slug}`}  class="text-4xl font-bold mb-4">{title}</h1>
+            <div class="prose">
+                <Content />
+            </div>
+        </main>
+    </div>
+</Layout>

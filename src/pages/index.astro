@@ -1,0 +1,48 @@
+---
+// import Welcome from '../components/Welcome.astro';
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const books = await getCollection('books');
+
+export const prerender = true; // De esta manera le decimos que la página tiene que seguir siendo estática, que no tiene que renderizar nada en el server.
+---
+
+<Layout title="Dev Books, libros para programadores">
+	<main>
+		<section>
+			<h1 class="text-center text-7xl font-extrabold mb-5">Dev Books 🧑‍💻</h1>
+		</section>
+		<section aria-label="Libros recomendados para programadores">
+			<div class="p-4 mx-auto max-w-screen-xl">
+				<div class="grid p-2 gap-6 md:grid-cols-2">
+					{
+						books.map((book: { slug: any; data: any; }) => {
+								const { slug, data } = book;
+								const { title, author, img, readtime, description, buy } = data;
+
+								return (
+									<article class="flex gap-3 place-items-center place-self-start">
+										<a href={`/libro/${slug}`} class="mb-2 xl:mb-0 transition hover:scale-110">
+											<img
+												transition:name={`image-${slug}`}
+												src={`/${img}`} 
+												alt={title} 
+												class="w-48 rounded" 
+											/>
+										</a>
+										<div>
+											<h3 transition:name={`title-${slug}`} class="text-xl font-bold">{title}</h3>
+											<p class="text-sm">{description}</p>
+											<p class="text-sm"><span>⌛</span>Lectura en {readtime} minutos</p>
+										</div>
+									</article>
+								)
+							}
+						)
+					}
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>
