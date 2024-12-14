@@ -1,7 +1,7 @@
 ---
-const COLOMBIA = 'COL'
+const COLOMBIA = 'CO'
 
-const country = Astro.request.headers.get('X-Vercel-IP-Country') ?? 'COL'; // Obtener el pais de la persona que visita el sitio.
+const country = Astro.request.headers.get('X-Vercel-IP-Country') ?? 'CO'; // Obtener el pais de la persona que visita el sitio.
 
 const storeCountry = country === COLOMBIA ? 'Colombia' : ''; // Esto mas que todo por si en el markdown pues se añaden mas paises.
 const countryName = country === COLOMBIA ? 'Colombia' : '';
